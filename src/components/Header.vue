@@ -1,5 +1,5 @@
 <template>
-  <div class="sticky">
+  <div class="sticky" @mouseleave="onMenuChange({})">
     <div class="flex flex_ai_c flex_jc_c bg_000 h_44 f_s_12 c_fff">
       <div class="m_l_60 pointer" @click="onGoHome">
         <img src="@/assets/logo.png" class="w_60 h_30" />
@@ -7,10 +7,11 @@
       <div class="flex_1 flex_center">
         <div class="flex">
           <div
-            class="m_lr_20 pointer"
+            class="p_lr_20 pointer h_44 l_h_44 t_a_c"
             v-for="item in menus"
             :key="item.id"
-            @click="onMenuChange(item)"
+            @mouseover="onMenuChange(item)"
+            @click="onMenuClick(item)"
           >
             {{ item.lable }}
           </div>
@@ -18,21 +19,23 @@
       </div>
       <div class="m_r_60">语言</div>
     </div>
-    <div
-      v-show="menus2 && menus2.length"
-      class="flex_center flex_column bg_f9f9fa c_999 h_44 f_s_12"
-    >
-      <div class="flex">
-        <div
-          class="m_lr_20 pointer"
-          v-for="item in menus2"
-          :key="item.id"
-          @click="onMenuChildrenChange(item)"
-        >
-          {{ item.lable }}
+    <transition name="fade" mode="out-in">
+      <div
+        v-show="menus2 && menus2.length"
+        class="menu-box-2 flex_center flex_column bg_f9f9fa c_999 h_44 f_s_12"
+      >
+        <div class="flex">
+          <div
+            class="m_lr_20 pointer"
+            v-for="item in menus2"
+            :key="item.id"
+            @click="onMenuChildrenChange(item)"
+          >
+            {{ item.lable }}
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -78,7 +81,7 @@ export default class Index extends Vue {
       new Array(
         new Children("igs-01", "ProductIGS01", "/product/igs-01"),
         new Children("igs-02", "ProductIGS02", "/product/igs-02"),
-        new Children("igs-03", "ProductIGS03", "/product/igs-03"),
+        // new Children("igs-03", "ProductIGS03", "/product/igs-03"),
         new Children("igs-05", "ProductIGS05", "/product/igs-05"),
         new Children("igs-06", "ProductIGS06", "/product/igs-06"),
         new Children("igs-09", "ProductIGS09", "/product/igs-09"),
@@ -163,6 +166,8 @@ export default class Index extends Vue {
   onMenuChange(item: any): void {
     this.current = item.key;
     this.menus2 = item.children;
+  }
+  onMenuClick(item: any): void {
     this.$router.push(item.path);
   }
   onMenuChildrenChange(item: any): void {
@@ -176,4 +181,20 @@ export default class Index extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.fade-enter {
+  opacity: 0;
+}
+.fade-leave {
+  opacity: 1;
+}
+.fade-leave-active,
+.fade-enter-active {
+  transition: opacity 0.8s;
+}
+.menu-box-2 {
+  position: absolute;
+  top: 45px;
+  width: 100%;
+  z-index: 1;
+}
 </style>
